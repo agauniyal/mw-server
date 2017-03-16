@@ -2,22 +2,20 @@
 
 const createTable = [
   'CREATE TABLE IF NOT EXISTS Projects(',
-  '`Id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,',
-  '`Name` CHAR(70) NOT NULL DEFAULT " ",',
-  '`Url` CHAR(200) NOT NULL DEFAULT " ",',
-  '`Description` CHAR(500) NOT NULL DEFAULT " ",',
-  '`Email` CHAR(255) NOT NULL DEFAULT " ",',
-  '`Visible` INTEGER NOT NULL DEFAULT 0',
+  'Id SERIAL NOT NULL PRIMARY KEY UNIQUE,',
+  'Name VARCHAR(70) NOT NULL,',
+  'Url VARCHAR(200) NOT NULL UNIQUE,',
+  'Description VARCHAR(400) NOT NULL,',
+  'Email VARCHAR(255) NOT NULL,',
+  'Visible BOOLEAN NOT NULL DEFAULT FALSE',
   ');'
 ].join(' ');
 
-const selectProjects = 'SELECT Id, Name, Url, Description FROM Projects WHERE Visible = 1 LIMIT (?) OFFSET(?)';
-const insertProject = 'INSERT INTO Projects VALUES (NULL, :Name, :Url, :Description, :Email, 0)';
-const markVisible = 'UPDATE Projects SET Visible = (?) WHERE Id = (?)';
+const selectProjects = 'SELECT Id, Name, Url, Description FROM Projects WHERE Visible = TRUE LIMIT ($1) OFFSET($2)';
+const insertProject = 'INSERT INTO Projects VALUES (DEFAULT, $1, $2, $3, $4, FALSE)';
 
 module.exports = {
   createTable,
   selectProjects,
-  insertProject,
-  markVisible
+  insertProject
 };

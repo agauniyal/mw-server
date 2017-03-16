@@ -20,12 +20,12 @@
   },
   "homepage": "https://github.com/agauniyal/mw-server#readme",
   "dependencies": {
-    "better-sqlite3": "^2.0.0",
     "body-parser": "^1.17.1",
     "bunyan": "^1.8.8",
     "le_node": "^1.7.0",
     "morgan": "^1.8.1",
     "normalize-url": "^1.9.0",
+    "pg": "^6.1.4",
     "validator": "^7.0.0"
   },
   "devDependencies": {

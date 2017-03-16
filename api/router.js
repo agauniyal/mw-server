@@ -42,12 +42,12 @@ const routeRequest = (req, res) => {
   switch (req.method) {
     case 'GET':
       if (path in routes.GET) {
-        routes.GET[path](req, res);
+        return routes.GET[path](req, res);
       }
       break;
     case 'POST':
       if (path in routes.POST) {
-        jsonParser(req, res, (err) => {
+        return jsonParser(req, res, (err) => {
           if (err) {
             utils.setStatus(res, 500, true);
             routerLogger.info(err);

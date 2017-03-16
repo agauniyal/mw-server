@@ -6,6 +6,7 @@ const normalizeUrl = require('normalize-url');
 const db = require('../db/model');
 const config = require('../config/config');
 const utils = require('../common/utils');
+const dbLogger = require('../common/logger').dbLogger;
 
 
 const get = (req, res) => {
@@ -17,17 +18,16 @@ const get = (req, res) => {
     return utils.setStatus(res, 400, true);
   }
 
-  const list = db.getProjects(limit, offset);
-  if (list === null) {
-    return utils.setStatus(res, 500, true);
-  }
-
-  utils.setStatus(res, 200);
-  return res.end(JSON.stringify({
-    version: config.version,
-    data: list,
-    status: true
-  }));
+  db.getProjects(limit, offset).then((result) => {
+    utils.setStatus(res, 200);
+    return res.end(JSON.stringify({
+      version: config.version,
+      data: result.rows
+    }));
+  }).catch((err) => {
+    utils.setStatus(res, 500, true);
+    return dbLogger.info(err);
+  });
 };
 
 
@@ -53,8 +53,13 @@ const post = (req, res) => {
     Email: req.body.Email
   };
 
-  const statusCode = db.insertProject(project) ? 200 : 400;
-  return utils.setStatus(res, statusCode, true);
+  db.insertProject(project).then(() => {
+    utils.setStatus(res, 200, true);
+    return dbLogger.info(project, 'Insert New Project');
+  }).catch((err) => {
+    utils.setStatus(res, 500, true);
+    return dbLogger.info(err);
+  });
 };
 
 module.exports = {

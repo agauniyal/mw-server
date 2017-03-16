@@ -1,7 +1,7 @@
 'use strict';
 
 const http = require('http');
-const Database = require('better-sqlite3');
+const Pool = require('pg').Pool;
 const method = require('./common/utils');
 const api = require('./api/router');
 const config = require('./config/config');
@@ -11,20 +11,20 @@ const Q = require('./db/Q');
 const serverLogger = require('./common/logger').serverLogger;
 
 
+const db = new Pool(config.pgURL);
 const port = method.safePort(process.env.PORT || config.port);
 
 api.get('/api/projects', projects.get);
 api.post('/api/projects', projects.post);
 
 const server = http.createServer(api.requestHandler);
-
-server.listen(port, (err) => {
-  const db = new Database(config.dbName);
-  if (err) {
-    db.close();
-    serverLogger.info(err);
-  } else {
-    db.prepare(Q.createTable).run();
+db.query(Q.createTable).then(() => {
+  server.listen(port, (err) => {
+    if (err) {
+      throw err;
+    }
     model.setDb(db);
-  }
+  });
+}).catch((err) => {
+  serverLogger.info(err);
 });
