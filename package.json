@@ -1,0 +1,35 @@
+{
+  "name": "mw-server",
+  "version": "0.0.1",
+  "description": "Code for Maintainers Wanted server",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "coverage": "jest --coverage",
+    "dev": "nodemon --ignore node_modules/ app.js",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/agauniyal/mw-server.git"
+  },
+  "author": "Abhinav Gauniyal",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/agauniyal/mw-server/issues"
+  },
+  "homepage": "https://github.com/agauniyal/mw-server#readme",
+  "dependencies": {
+    "better-sqlite3": "^2.0.0",
+    "body-parser": "^1.17.1",
+    "bunyan": "^1.8.8",
+    "le_node": "^1.7.0",
+    "morgan": "^1.8.1",
+    "normalize-url": "^1.9.0",
+    "validator": "^7.0.0"
+  },
+  "devDependencies": {
+    "jest": "^19.0.2",
+    "nodemon": "^1.11.0"
+  }
+}
