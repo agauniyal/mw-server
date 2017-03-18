@@ -6,7 +6,35 @@ const normalizeUrl = require('normalize-url');
 const db = require('../db/model');
 const config = require('../config/config');
 const utils = require('../common/utils');
-const dbLogger = require('../common/logger').dbLogger;
+const Logger = require('../common/logger').Logger;
+
+
+const cache = {
+  cachedRows: [],
+  limit: 100,
+  offset: 0,
+  updating: false,
+  updateRows: (limit, offset) => {
+    db.getProjects(limit, offset).then((result) => {
+      cache.cachedRows = result.rows;
+    }).catch((err) => {
+      Logger.info(err);
+    });
+  },
+  getRows: (limit, offset) => {
+    return cache.cachedRows.slice(offset, offset + limit);
+  },
+  refresh: (interval) => {
+    if (cache.updating) {
+      return;
+    }
+    cache.updating = true;
+    cache.updateRows(cache.limit, cache.offset);
+    setInterval(() => {
+      cache.updateRows(cache.limit, cache.offset);
+    }, interval);
+  }
+};
 
 
 const get = (req, res) => {
@@ -14,20 +42,28 @@ const get = (req, res) => {
   const limit = parseInt(query.limit);
   const offset = parseInt(query.offset);
 
-  if (isNaN(limit) || isNaN(offset) || limit > 100) {
+  if (isNaN(limit) || isNaN(offset) || limit > 100 || limit < 0 || offset < 0) {
     return utils.setStatus(res, 400, true);
   }
 
-  db.getProjects(limit, offset).then((result) => {
+  if (limit + offset < 100) {
     utils.setStatus(res, 200);
     return res.end(JSON.stringify({
       version: config.version,
-      data: result.rows
+      data: cache.getRows(limit, offset)
     }));
-  }).catch((err) => {
-    utils.setStatus(res, 500, true);
-    return dbLogger.info(err);
-  });
+  } else {
+    db.getProjects(limit, offset).then((result) => {
+      utils.setStatus(res, 200);
+      return res.end(JSON.stringify({
+        version: config.version,
+        data: result.rows
+      }));
+    }).catch((err) => {
+      utils.setStatus(res, 500, true);
+      return dbLogger.info(err);
+    });
+  }
 };
 
 
@@ -55,14 +91,15 @@ const post = (req, res) => {
 
   db.insertProject(project).then(() => {
     utils.setStatus(res, 200, true);
-    return dbLogger.info(project, 'Insert New Project');
+    return Logger.info(project, 'Insert New Project');
   }).catch((err) => {
     utils.setStatus(res, 500, true);
-    return dbLogger.info(err);
+    return Logger.info(err);
   });
 };
 
 module.exports = {
   get,
-  post
+  post,
+  cache
 };

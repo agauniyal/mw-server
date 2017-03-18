@@ -4,7 +4,7 @@ const url = require('url');
 const logger = require('morgan')('dev');
 const bodyParser = require('body-parser');
 const utils = require('../common/utils');
-const routerLogger = require('../common/logger').routerLogger;
+const Logger = require('../common/logger').routerLogger;
 const jsonParser = bodyParser.json({ limit: 2000 });
 
 
@@ -50,7 +50,7 @@ const routeRequest = (req, res) => {
         return jsonParser(req, res, (err) => {
           if (err) {
             utils.setStatus(res, 500, true);
-            routerLogger.info(err);
+            Logger.info(err);
           } else {
             routes.POST[path](req, res);
           }
@@ -69,7 +69,7 @@ router.requestHandler = (req, res) => {
   logger(req, res, (err) => {
     if (err) {
       utils.setStatus(res, 500, true);
-      routerLogger.info(err);
+      Logger.info(err);
     } else {
       routeRequest(req, res);
     }

@@ -24,6 +24,7 @@ db.query(Q.createTable).then(() => {
       throw err;
     }
     model.setDb(db);
+    projects.cache.refresh(60000);
   });
 }).catch((err) => {
   serverLogger.info(err);

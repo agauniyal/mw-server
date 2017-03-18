@@ -11,8 +11,8 @@ const LEStream = LE.bunyanStream({
 });
 
 
-const serverLogger = bunyan.createLogger({
-  name: 'MW_HTTP',
+const Logger = bunyan.createLogger({
+  name: 'MW',
   stream: LEStream.stream,
   level: 'fatal'
 });
@@ -23,18 +23,10 @@ const routerLogger = bunyan.createLogger({
     req: bunyan.stdSerializers.req,
     res: bunyan.stdSerializers.res
   },
-  stream: LEStream.stream,
-  level: 'debug'
-});
-
-const dbLogger = bunyan.createLogger({
-  name: 'MW_DB',
-  stream: LEStream.stream,
-  level: 'debug'
+  stream: LEStream.stream
 });
 
 module.exports = {
-  serverLogger,
-  routerLogger,
-  dbLogger
+  Logger,
+  routerLogger
 };
