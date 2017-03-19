@@ -61,7 +61,7 @@ const get = (req, res) => {
       }));
     }).catch((err) => {
       utils.setStatus(res, 500, true);
-      return dbLogger.info(err);
+      return Logger.info(err);
     });
   }
 };
