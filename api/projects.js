@@ -29,7 +29,9 @@ const cache = {
       return;
     }
     cache.updating = true;
-    cache.updateRows(cache.limit, cache.offset);
+    setImmediate(() => {
+      cache.updateRows(cache.limit, cache.offset);
+    });
     setInterval(() => {
       cache.updateRows(cache.limit, cache.offset);
     }, interval);

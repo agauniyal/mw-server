@@ -34,7 +34,9 @@ const setCors = (res) => {
 const setStatus = (res, status, end = false) => {
   res.statusCode = status;
   res.statusMessage = http.STATUS_CODES[status];
-  return end ? res.end() : undefined;
+  if (end === true) {
+    res.end();
+  }
 };
 
 module.exports = {
