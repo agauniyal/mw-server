@@ -41,8 +41,8 @@ test('sets CORS headers', () => {
 test('sets response status', () => {
   const MockedResponse = {
     end: jest.fn(),
-    statusCode: undefined,
-    statusMessage: undefined
+    statusCode: null,
+    statusMessage: null
   };
 
   utils.setStatus(MockedResponse, 200);
