@@ -4,8 +4,8 @@
   "description": "Code for Maintainers Wanted server",
   "main": "app.js",
   "scripts": {
-    "test": "jest",
-    "coverage": "jest --coverage",
+    "test": "LE_TOKEN='LOG_TOKEN' DB_PATH='postgres://USER:PASS@HOST:1234/NAME' jest",
+    "coverage": "LE_TOKEN='LOG_TOKEN' DB_PATH='postgres://USER:PASS@HOST:1234/NAME' jest --coverage",
     "dev": "nodemon --ignore node_modules/ app.js",
     "start": "node app.js"
   },
