@@ -29,7 +29,9 @@ const cache = {
       return;
     }
     cache.updating = true;
-    cache.updateRows(cache.limit, cache.offset);
+    setImmediate(() => {
+      cache.updateRows(cache.limit, cache.offset);
+    });
     setInterval(() => {
       cache.updateRows(cache.limit, cache.offset);
     }, interval);
@@ -61,7 +63,7 @@ const get = (req, res) => {
       }));
     }).catch((err) => {
       utils.setStatus(res, 500, true);
-      return dbLogger.info(err);
+      return Logger.info(err);
     });
   }
 };

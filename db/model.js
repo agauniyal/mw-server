@@ -3,7 +3,7 @@
 const Q = require('./Q');
 
 
-let db = undefined;
+let db = null;
 const setDb = (instance) => {
   db = instance;
 };
